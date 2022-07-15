@@ -6,7 +6,7 @@ var midiArray = midiParser.parse(data);
 
 let hunderdPLN = '';
 let instrument = '';
-let limit = 1000;
+let limit = 500;
 
 function getEventData(event) {
     
@@ -27,10 +27,10 @@ function getEventData(event) {
         }
     }
 
-    if (event.type == 8) {
+    if (event.type == 8 || event.type == 11) {
         return {
             type: 'play_note',
-            pitch: event.data[0]-70,
+            pitch: event.data[0]-60,
             data: event.data,
             instrument: instrument,
             absTime: parseDelay(absoluteTime)
@@ -103,22 +103,36 @@ let instruments = {
     'Synth Echo': 'noteblock_bass'
 }
 
+const maxCombines = 10;
+let combines = 0;
 for (let i in notesSorted) {
     if (notesSorted[i].type == 'play_note') {
 
-        let delay = notesSorted[i].absTime - notesSorted[i-1].absTime
-        
-        //If they are supposed to be played at once
-        if (notesSorted[i].absTime == notesSorted[i-1].absTime) {
-            hunderdPLN += "|!combine"
+        let delay;
+        if (i != 0) {
+            delay = notesSorted[i].absTime - notesSorted[i-1].absTime
+
+            //If they are supposed to be played at once
+            if (notesSorted[i].absTime == notesSorted[i-1].absTime) {
+                if (combines < maxCombines) hunderdPLN += "|!combine"
+                combines++;
+            } else {
+                delay>1 && (hunderdPLN += `|!stop@${delay-1}`)
+                combines = 0;
+            }
+
         } else {
-            delay && (hunderdPLN += `|!stop@${delay}`)
+            delay = 0;
         }
+        
 
         let instrument = instruments[notesSorted[i].instrument] 
         if (instrument == undefined) instrument = 'noteblock_flute'
 
-        hunderdPLN += `|${instrument}@${notesSorted[i].pitch}`
+        if (combines < maxCombines) {
+            hunderdPLN += `|${instrument}@${notesSorted[i].pitch}`
+        }
+
     }
 }
 
