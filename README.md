@@ -1,12 +1,15 @@
 # 100PLN Website
 
-TO DO:
-* Make a website
-* Support multiple instruments
+This is a random `.mid` to `.moai` converter.
 
-How to use:
+> **Warning**
+> This works best with simple songs. You can still make songs on websites e.g. https://onlinesequencer.net.
+
+## Installation
+1. Clone the repo
+2. `npm i`
+
+## How to use
 1. Replace `song.mid` with your MIDI file.
 2. Run `node .`
-3. `musik.moai` is your output.
-
-> Warning: This works only 20% of the times.
+3. `song.moai` is your output.
