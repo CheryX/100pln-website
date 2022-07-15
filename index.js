@@ -5,7 +5,9 @@ let data = fs.readFileSync('./song.mid', 'base64')
 var midiArray = midiParser.parse(data);
 
 let hunderdPLN = '';
-let limit = 5000;
+
+// This disables "simulate realistic smoke" feature on your PC 
+let limit = 3000;
 
 let BPM = midiArray.timeDivision
 hunderdPLN += `!speed@${BPM}`;
@@ -15,6 +17,7 @@ for (let eventList of midiArray.track) {
 
         let combineNext = false;
 
+        // TODO: Make this part better
         let delay = Math.floor(event.deltaTime/92)
         if (delay > 100) delay = Math.floor(Math.log(delay)+90)
         if (delay == 0) combineNext = true;
@@ -22,10 +25,7 @@ for (let eventList of midiArray.track) {
             
         if (event.data && event.data.length == 2 && event.data[1]) {
             
-            if (combineNext) {
-                hunderdPLN += '|!combine'
-            }
-
+            combineNext && (hunderdPLN += '|!combine')
             hunderdPLN += `|noteblock_harp@${event.data[0]-50}`
 
         } 
