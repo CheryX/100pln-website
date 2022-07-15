@@ -1,7 +1,7 @@
 let midiParser  = require('midi-parser-js');
 let fs = require('fs');
 
-let data = fs.readFileSync('./szprotki.mid', 'base64')
+let data = fs.readFileSync('./song.mid', 'base64')
 var midiArray = midiParser.parse(data);
 
 let hunderdPLN = '';
