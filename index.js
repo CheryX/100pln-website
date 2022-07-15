@@ -6,7 +6,7 @@ var midiArray = midiParser.parse(data);
 
 let hunderdPLN = '';
 let instrument = '';
-let limit = 4500;
+let limit = 1000;
 
 function getEventData(event) {
     
@@ -80,15 +80,14 @@ for (instrument of midiArray.track) {
     for (let note of instrument.event) {
 
         let eventData = getEventData(note);
-        limit--;
 
-        if (eventData.type != 'none' && limit > 0) notes.push(eventData)
+        if (eventData.type != 'none') notes.push(eventData)
         
     }
 }
 
 // 2. Sort all of the notes in one array
-let notesSorted = notes.sort(({absTime:a}, {absTime:b}) => a-b);
+let notesSorted = notes.sort(({absTime:a}, {absTime:b}) => a-b).slice(0, limit);
 
 console.table(notesSorted)
 
